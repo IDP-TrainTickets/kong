@@ -1,4 +1,6 @@
 _format_version: "3.0"
+_transform: true
+
 services:
   - name: auth-service
     url: http://auth-app:5000
@@ -6,3 +8,30 @@ services:
       - name: auth-route
         paths:
           - /auth
+  - name: db-adminer
+    url: http://adminer:8080
+    routes:
+      - name: adminer-service
+        paths:
+          - /adminer
+
+  - name: business-logic-service
+    url: http://business-logic-app:5001
+    routes:
+      - name: bl-route
+        paths:
+          - /api
+    plugins:
+      - name: jwt
+        config:
+          claims_to_verify:
+            - exp
+
+consumers:
+  - username: auth-service
+        
+jwt_secrets:
+  - consumer: auth-service
+    key: auth-service
+    secret: secret-key-test-123
+    algorithm: HS256
